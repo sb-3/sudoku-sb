@@ -12,14 +12,15 @@ class App extends Component {
     this.state = {
       startSudoku:
         "3.542.81.4879.15.6.29.5637485.793.416132.8957.74.6528.2413.9.655.867.192.965124.8"
-        
+      ,
+      showOnlyValid:false
     }
     // this.state.boardInstance = new SudokuBoard({startSudoku:this.state.startSudoku});
   }
   render() {
     return (
       <div className="App">
-      <SudokuBoard startSudoku={this.state.startSudoku}/>
+        <SudokuBoard startSudoku={this.state.startSudoku} showOnlyValid={this.state.showOnlyValid}/>
       </div>
     )
   }

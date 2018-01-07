@@ -17,8 +17,6 @@ class SudokuBoard extends Component {
     constructor(props) {
         super(props);
         const cells = this.constructor.generateBoardArray(props.startSudoku);
-        //   debugger
-        // this.originalCells = cells.slice()
         this.state = {
             cells: cells.slice(),
             originalCells: this.constructor.generateBoardArray(props.startSudoku)//we want this to never change
@@ -76,12 +74,16 @@ class SudokuBoard extends Component {
     }
     onCellClick(coords) {
         console.log(coords);
-        this.state.possibleChoices = this.getPossibleValues(coords);
-        this.state.selectedCellCoords = coords;
-        this.setState({ possibleChoices: this.getPossibleValues(coords) });
+        if (this.props.showOnlyValid) {
+            // this.state.possibleChoices = this.getPossibleValues(coords);
+            // this.state.selectedCellCoords = coords;
+            this.setState({ selectedCellCoords: coords, possibleChoices: this.getPossibleValues(coords) });
+        } else {
+            this.setState({ selectedCellCoords: coords, possibleChoices: ["."].concat(["1", "2", "3", "4", "5", "6", "7", "8", "9"]) })
+        }
     }
     setSelectedCell(value) {
-        // this.state.cells[this.state.selectedCellCoords[0]][this.state.selectedCellCoords[1]] = value;
+        this.state.cells[this.state.selectedCellCoords[0]][this.state.selectedCellCoords[1]] = value;
         const cells = this.state.cells.slice();
         cells[this.state.selectedCellCoords[0]][this.state.selectedCellCoords[1]] = value;
         this.setState({ cells: cells });
@@ -98,6 +100,7 @@ class SudokuBoard extends Component {
 
     }
     renderGameBoard() {
+        const that = this;
         return (
             <div className="sudokuBoard">
                 {this.state.cells.map((row, rowIndex) => {
@@ -106,13 +109,15 @@ class SudokuBoard extends Component {
                             {row.map((value, columnIndex) => {
                                 // console.log(columnIndex + "" + rowIndex);
                                 return (<SudokuCell key={columnIndex + "" + rowIndex}
-                                    coords={[rowIndex,columnIndex]}
+                                    coords={[rowIndex, columnIndex]}
+                                    isSelected={that.state.selectedCellCoords && that.state.selectedCellCoords[0] === rowIndex && that.state.selectedCellCoords[1] === columnIndex}
                                     value={value}
                                     modifiable={
-                                        isNaN(this.state.originalCells[rowIndex][columnIndex]) === true
+                                        isNaN(that.state.originalCells[rowIndex][columnIndex]) === true
                                     }
                                     onCellClick={(coords) => {
-                                         this.onCellClick(coords) }}
+                                        that.onCellClick(coords)
+                                    }}
                                 />)
                             })}
                         </div>
