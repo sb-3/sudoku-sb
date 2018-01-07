@@ -78,11 +78,13 @@ class SudokuBoard extends Component {
         console.log(coords);
         this.state.possibleChoices = this.getPossibleValues(coords);
         this.state.selectedCellCoords = coords;
-        this.setState(this.state);
+        this.setState({ possibleChoices: this.getPossibleValues(coords) });
     }
     setSelectedCell(value) {
-        this.state.cells[this.state.selectedCellCoords[0]][this.state.selectedCellCoords[1]] = value;
-        this.setState(this.state);
+        // this.state.cells[this.state.selectedCellCoords[0]][this.state.selectedCellCoords[1]] = value;
+        const cells = this.state.cells.slice();
+        cells[this.state.selectedCellCoords[0]][this.state.selectedCellCoords[1]] = value;
+        this.setState({ cells: cells });
     }
     renderPossibleChoices() {
         if (this.state.possibleChoices) {
@@ -100,16 +102,18 @@ class SudokuBoard extends Component {
             <div className="sudokuBoard">
                 {this.state.cells.map((row, rowIndex) => {
                     return (
-                        <div className="sudokuRow" >
+                        <div className="sudokuRow" key={rowIndex}>
                             {row.map((value, columnIndex) => {
                                 // console.log(columnIndex + "" + rowIndex);
                                 return (<SudokuCell key={columnIndex + "" + rowIndex}
+                                    coords={[rowIndex,columnIndex]}
                                     value={value}
                                     modifiable={
-                                        isNaN(this.state.originalCells[rowIndex][columnIndex])
+                                        isNaN(this.state.originalCells[rowIndex][columnIndex]) === true
                                     }
-                                    possibleValues={this.getPossibleValues([rowIndex,columnIndex])}
-                                    onClick={() => { this.onCellClick([rowIndex, columnIndex]) }} />)
+                                    onCellClick={(coords) => {
+                                         this.onCellClick(coords) }}
+                                />)
                             })}
                         </div>
                     )
