@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import SudokuCell from './SudokuCell';
+import PieMenu, { Slice } from 'react-pie-menu';
 
 class SudokuBoard extends Component {
     static generateBoardArray(str) {
@@ -10,7 +11,7 @@ class SudokuBoard extends Component {
                 row++
                 arr[row] = [];
             }
-            arr[row].push(value);
+            arr[row].push(value==="."?this.blankDisplay:value);
         });
         return arr;
     }
@@ -20,16 +21,24 @@ class SudokuBoard extends Component {
         this.state = {
             cells: cells.slice(),
             originalCells: this.constructor.generateBoardArray(props.startSudoku),//we want this to never change
-            possibleChoices:[".","1", "2", "3", "4", "5", "6", "7", "8", "9"]
+            possibleChoices: [this.blankDisplay, "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            renderSelect:false,
+            mousePosition:[0,0]
         }
         // console.log(this);
     }
     static getBlockCoords([rowIndex, columnIndex]) {
         return [Math.floor(rowIndex / 3), Math.floor(columnIndex / 3)];
     }
-    static getBlockIndex(coords){
+    static getBlockIndex(coords) {
         const blockCoords = this.getBlockCoords(coords);
-        return (blockCoords[0] * 3)+(blockCoords[1])
+        return (blockCoords[0] * 3) + (blockCoords[1])
+    }
+    static get blankDisplay(){
+        return "-"
+    }
+     get blankDisplay(){
+        return this.constructor.blankDisplay;
     }
     getRowValues([rowIndex, columnIndex]) {
         const values = [];
@@ -69,7 +78,7 @@ class SudokuBoard extends Component {
         const columnValues = this.getColumnValues(coords);
         const blockValues = this.getBlockValues(coords);
         // console.log(rowValues, columnValues, blockValues);
-        return ["."].concat(["1", "2", "3", "4", "5", "6", "7", "8", "9"].filter(pv => {
+        return [this.blankDisplay].concat(["1", "2", "3", "4", "5", "6", "7", "8", "9"].filter(pv => {
             return rowValues.indexOf(pv) === -1
                 &&
                 columnValues.indexOf(pv) === -1
@@ -79,7 +88,7 @@ class SudokuBoard extends Component {
     }
     isCellValid(coords) {
         const cellValue = this.state.cells[coords[0]][coords[1]];
-        if (cellValue === ".") {
+        if (cellValue === this.blankDisplay) {
             return true;
         }
         return this.getPossibleValues(coords).indexOf(cellValue) !== -1;
@@ -91,7 +100,7 @@ class SudokuBoard extends Component {
             // this.state.selectedCellCoords = coords;
             this.setState({ selectedCellCoords: coords, possibleChoices: this.getPossibleValues(coords) });
         } else {
-            this.setState({ selectedCellCoords: coords, possibleChoices: ["."].concat(["1", "2", "3", "4", "5", "6", "7", "8", "9"]) })
+            this.setState({ selectedCellCoords: coords, possibleChoices: [this.blankDisplay].concat(["1", "2", "3", "4", "5", "6", "7", "8", "9"]) })
         }
     }
     setSelectedCell(value) {
@@ -103,25 +112,44 @@ class SudokuBoard extends Component {
     setCellAtCoords(coords, value) {
         // this.state.cells[coords[0]][coords[1]] = value;
         const cells = this.state.cells.slice();
-        cells[coords[0]][coords[1]]  = value;
+        cells[coords[0]][coords[1]] = value;
         this.setState({ cells: cells });
     }
-    // renderPossibleChoices() {
-    //     if (this.state.possibleChoices) {
-    //         return (
-    //             <div className="possibleChoicesContainer">
-    //                 <select className="possibleChoices" size={this.state.possibleChoices.length} onChange={(evt) => {
-    //                     // console.log("changed", evt.target);
-    //                     this.setSelectedCell(evt.target.value);
-    //                 }}>
-    //                     {this.state.possibleChoices.map(value => (<option value={value}> {value}</option>))}
-    //                 </select>
-    //             </div>);
-    //     }
+    renderPossibleChoices() {
+        //     if (this.state.possibleChoices) {
+        //         return (
+        //             <div className="possibleChoicesContainer">
+        //                 <select className="possibleChoices" size={this.state.possibleChoices.length} onChange={(evt) => {
+        //                     // console.log("changed", evt.target);
+        //                     this.setSelectedCell(evt.target.value);
+        //                 }}>
+        //                     {this.state.possibleChoices.map(value => (<option value={value}> {value}</option>))}
+        //                 </select>
+        //             </div>);
+        //     }
 
-    // }
+        return (<PieMenu
+            radius='125px'
+            centerRadius='50px'
+            centerX={this.state.mousePosition[0] + "px"}
+            centerY={this.state.mousePosition[1] + "px"}
+        >
+            {this.state.possibleChoices.map(v => {
+                return (
+                    <Slice
+                        contentStyle={{ color: 'black' }}
+                        // containerStyle={{background:"lightgrey"}}
+                        onSelect={() => {
+                            console.log("pie select", v);
+                            this.setSelectedCell(v);
+                            this.setState({ renderSelect: false });
+                        }}>{v}</Slice>
+                );
+            })}
+        </PieMenu>);
+    }
     renderGameBoard() {
-        const that = this;
+        // const that = this;
         return (
             <div className="sudokuBoard">
                 {this.state.cells.map((row, rowIndex) => {
@@ -131,18 +159,19 @@ class SudokuBoard extends Component {
                                 // console.log(columnIndex + "" + rowIndex);
                                 return (<SudokuCell key={columnIndex + "" + rowIndex}
                                     coords={[rowIndex, columnIndex, this.constructor.getBlockIndex([rowIndex, columnIndex])]}
-                                    isSelected={that.state.selectedCellCoords && that.state.selectedCellCoords[0] === rowIndex && that.state.selectedCellCoords[1] === columnIndex}
+                                    isSelected={this.state.selectedCellCoords && this.state.selectedCellCoords[0] === rowIndex && this.state.selectedCellCoords[1] === columnIndex}
                                     value={value}
                                     isValid={this.isCellValid([rowIndex, columnIndex])}
                                     possibleChoices={this.state.possibleChoices}
                                     modifiable={
-                                        isNaN(that.state.originalCells[rowIndex][columnIndex]) === true
+                                        isNaN(this.state.originalCells[rowIndex][columnIndex]) === true
                                     }
-                                    onCellClick={() => {
-                                        that.onCellClick([rowIndex, columnIndex])
+                                    onCellClick={(cellClickArgs) => {
+                                        this.setState({mousePosition:cellClickArgs.mousePosition,renderSelect:true})
+                                        this.onCellClick(cellClickArgs.coords);
                                     }}
                                     setCell={value => {
-                                        that.setCellAtCoords([rowIndex, columnIndex], value)
+                                        this.setCellAtCoords([rowIndex, columnIndex], value)
                                     }}
                                 />)
                             })}
@@ -156,7 +185,7 @@ class SudokuBoard extends Component {
     render() {
         return (<div>
             {this.renderGameBoard()}
-            {/* {this.renderPossibleChoices()} */}
+            {this.state.renderSelect ? this.renderPossibleChoices() : undefined}
         </div>);
     }
 }

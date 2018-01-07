@@ -38,9 +38,6 @@
 }
 
 
-.editable {
-  z-index:9999;
-}
 .selected{
   background-color: yellow 
 }
