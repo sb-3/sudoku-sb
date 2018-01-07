@@ -21,7 +21,7 @@ class SudokuBoard extends Component {
             cells: cells.slice(),
             originalCells: this.constructor.generateBoardArray(props.startSudoku)//we want this to never change
         }
-        console.log(this);
+        // console.log(this);
     }
     static getBlockCoords([rowIndex, columnIndex]) {
         return [Math.floor(rowIndex / 3), Math.floor(columnIndex / 3)];
@@ -63,7 +63,7 @@ class SudokuBoard extends Component {
         const rowValues = this.getRowValues(coords);
         const columnValues = this.getColumnValues(coords);
         const blockValues = this.getBlockValues(coords);
-        console.log(rowValues, columnValues, blockValues);
+        // console.log(rowValues, columnValues, blockValues);
         return ["."].concat(["1", "2", "3", "4", "5", "6", "7", "8", "9"].filter(pv => {
             return rowValues.indexOf(pv) === -1
                 &&
@@ -72,8 +72,15 @@ class SudokuBoard extends Component {
                 blockValues.indexOf(pv) === -1
         }))
     }
+    isCellValid(coords) {
+        const cellValue = this.state.cells[coords[0]][coords[1]];
+        if (cellValue === ".") {
+            return true;
+        }
+        return this.getPossibleValues(coords).indexOf(cellValue) !== -1;
+    }
     onCellClick(coords) {
-        console.log(coords);
+        // console.log(coords);
         if (this.props.showOnlyValid) {
             // this.state.possibleChoices = this.getPossibleValues(coords);
             // this.state.selectedCellCoords = coords;
@@ -92,8 +99,11 @@ class SudokuBoard extends Component {
         if (this.state.possibleChoices) {
             return (
                 <div className="possibleChoicesContainer">
-                    <select className="possibleChoices" size={this.state.possibleChoices.length}>
-                        {this.state.possibleChoices.map(value => (<option onClick={() => { this.setSelectedCell(value) }} value={value}> {value}</option>))}
+                    <select className="possibleChoices" size={this.state.possibleChoices.length} onChange={(evt) => {
+                        // console.log("changed", evt.target);
+                        this.setSelectedCell(evt.target.value);
+                    }}>
+                        {this.state.possibleChoices.map(value => (<option value={value}> {value}</option>))}
                     </select>
                 </div>);
         }
@@ -112,6 +122,7 @@ class SudokuBoard extends Component {
                                     coords={[rowIndex, columnIndex]}
                                     isSelected={that.state.selectedCellCoords && that.state.selectedCellCoords[0] === rowIndex && that.state.selectedCellCoords[1] === columnIndex}
                                     value={value}
+                                    isValid={this.isCellValid([rowIndex, columnIndex])}
                                     modifiable={
                                         isNaN(that.state.originalCells[rowIndex][columnIndex]) === true
                                     }

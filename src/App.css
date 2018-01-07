@@ -36,6 +36,10 @@
   /* white-space:nowrap; */
   /* position:fixed; */
 }
+.invalid{
+  background-color:red;
+  color:white
+}
 .modifiable{
   color:black;
 }

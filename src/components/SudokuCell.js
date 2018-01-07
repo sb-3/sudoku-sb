@@ -11,6 +11,9 @@ class SudokuCell extends Component {
             cn += " selected"
 
         }
+        if(this.props && !this.props.isValid){
+            cn += " invalid"
+        }
         if(this.props && this.props.modifiable){
             cn += " modifiable"
         }
