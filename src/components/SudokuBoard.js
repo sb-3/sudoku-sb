@@ -19,12 +19,17 @@ class SudokuBoard extends Component {
         const cells = this.constructor.generateBoardArray(props.startSudoku);
         this.state = {
             cells: cells.slice(),
-            originalCells: this.constructor.generateBoardArray(props.startSudoku)//we want this to never change
+            originalCells: this.constructor.generateBoardArray(props.startSudoku),//we want this to never change
+            possibleChoices:[".","1", "2", "3", "4", "5", "6", "7", "8", "9"]
         }
         // console.log(this);
     }
     static getBlockCoords([rowIndex, columnIndex]) {
         return [Math.floor(rowIndex / 3), Math.floor(columnIndex / 3)];
+    }
+    static getBlockIndex(coords){
+        const blockCoords = this.getBlockCoords(coords);
+        return (blockCoords[0] * 3)+(blockCoords[1])
     }
     getRowValues([rowIndex, columnIndex]) {
         const values = [];
@@ -95,20 +100,26 @@ class SudokuBoard extends Component {
         cells[this.state.selectedCellCoords[0]][this.state.selectedCellCoords[1]] = value;
         this.setState({ cells: cells });
     }
-    renderPossibleChoices() {
-        if (this.state.possibleChoices) {
-            return (
-                <div className="possibleChoicesContainer">
-                    <select className="possibleChoices" size={this.state.possibleChoices.length} onChange={(evt) => {
-                        // console.log("changed", evt.target);
-                        this.setSelectedCell(evt.target.value);
-                    }}>
-                        {this.state.possibleChoices.map(value => (<option value={value}> {value}</option>))}
-                    </select>
-                </div>);
-        }
-
+    setCellAtCoords(coords, value) {
+        // this.state.cells[coords[0]][coords[1]] = value;
+        const cells = this.state.cells.slice();
+        cells[coords[0]][coords[1]]  = value;
+        this.setState({ cells: cells });
     }
+    // renderPossibleChoices() {
+    //     if (this.state.possibleChoices) {
+    //         return (
+    //             <div className="possibleChoicesContainer">
+    //                 <select className="possibleChoices" size={this.state.possibleChoices.length} onChange={(evt) => {
+    //                     // console.log("changed", evt.target);
+    //                     this.setSelectedCell(evt.target.value);
+    //                 }}>
+    //                     {this.state.possibleChoices.map(value => (<option value={value}> {value}</option>))}
+    //                 </select>
+    //             </div>);
+    //     }
+
+    // }
     renderGameBoard() {
         const that = this;
         return (
@@ -119,15 +130,19 @@ class SudokuBoard extends Component {
                             {row.map((value, columnIndex) => {
                                 // console.log(columnIndex + "" + rowIndex);
                                 return (<SudokuCell key={columnIndex + "" + rowIndex}
-                                    coords={[rowIndex, columnIndex]}
+                                    coords={[rowIndex, columnIndex, this.constructor.getBlockIndex([rowIndex, columnIndex])]}
                                     isSelected={that.state.selectedCellCoords && that.state.selectedCellCoords[0] === rowIndex && that.state.selectedCellCoords[1] === columnIndex}
                                     value={value}
                                     isValid={this.isCellValid([rowIndex, columnIndex])}
+                                    possibleChoices={this.state.possibleChoices}
                                     modifiable={
                                         isNaN(that.state.originalCells[rowIndex][columnIndex]) === true
                                     }
-                                    onCellClick={(coords) => {
-                                        that.onCellClick(coords)
+                                    onCellClick={() => {
+                                        that.onCellClick([rowIndex, columnIndex])
+                                    }}
+                                    setCell={value => {
+                                        that.setCellAtCoords([rowIndex, columnIndex], value)
                                     }}
                                 />)
                             })}
@@ -141,7 +156,7 @@ class SudokuBoard extends Component {
     render() {
         return (<div>
             {this.renderGameBoard()}
-            {this.renderPossibleChoices()}
+            {/* {this.renderPossibleChoices()} */}
         </div>);
     }
 }
