@@ -41,20 +41,24 @@ class App extends Component {
       , ["8..........36......7..9.2...5...7.......457.....1...3...1....68..85...1..9....4..", "812753649943682175675491283154237896369845721287169534521974368438526917796318452"]]
   }
   render() {
-    const that=this;
+    const that = this;
     return (
       <div className="App">
-        <SudokuBoard startSudoku={this.state.puzzle[0]} showOnlyValid={this.state.showOnlyValid} />
-        <ul style={{"text-align":"left"}}>
-          {this.constructor.puzzles.map(puzzle => {
-            return (<li onClick={() => {
-              console.log("li clicked",puzzle);
-              this.setState({ puzzle: puzzle.slice() });
-            }}>
-              {puzzle[0]}
-            </li>)
-          })}
-        </ul>
+        <div>
+          <SudokuBoard startSudoku={this.state.puzzle[0]} showOnlyValid={this.state.showOnlyValid} />
+        </div>
+        <div>
+          <ul style={{ "text-align": "left" }}>
+            {this.constructor.puzzles.map(puzzle => {
+              return (<li onClick={() => {
+                console.log("li clicked", puzzle);
+                this.setState({ puzzle: puzzle.slice() });
+              }}>
+                {puzzle[0]}
+              </li>)
+            })}
+          </ul>
+        </div>
       </div>
     )
   }
