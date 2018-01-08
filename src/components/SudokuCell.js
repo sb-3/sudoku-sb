@@ -106,11 +106,11 @@ class SudokuCell extends Component {
         return (
             <div className={this.getClassName()}
                 onClick={(e) => {
-                    console.log(e.target);
+                    console.log(e);
                     console.log(this);
                     // if (this.props.modifiable) {
                         // this.setState({ editable: true, mousePosition: [e.clientX, e.clientY] });
-                        this.props.onCellClick({ coords: this.props.coords, mousePosition: [e.clientX, e.clientY] });
+                        this.props.onCellClick({ coords: this.props.coords, mousePosition: [e.pageX, e.pageY] });
                     // }
                 }}>
                 {this.props.value}
