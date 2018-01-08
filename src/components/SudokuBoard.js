@@ -62,12 +62,12 @@ class SudokuBoard extends Component {
 
     getBlockValues([rowIndex, columnIndex]) {
         const values = [];
-        const blockIndex = this.constructor.getBlockCoords([rowIndex, columnIndex]);
+        const blockIndex = this.constructor.getBlockIndex([rowIndex, columnIndex]);
         for (let r = 0; r < 9; r++) {
-            for (let c; c < 9; c++) {
+            for (let c=0; c < 9; c++) {
                 if (rowIndex !== r &&
                     columnIndex !== c &&
-                    blockIndex === this.constructor.getBlockCoords([r, c])) {
+                    blockIndex === this.constructor.getBlockIndex([r, c])) {
                     values.push(this.state.cells[r][c]);
                 }
             }
@@ -96,6 +96,7 @@ class SudokuBoard extends Component {
     }
     onCellClick(coords) {
         // console.log(coords);
+        console.log(this.getBlockValues(coords));
         if (this.props.showOnlyValid) {
             // this.state.possibleChoices = this.getPossibleValues(coords);
             // this.state.selectedCellCoords = coords;
@@ -157,7 +158,7 @@ class SudokuBoard extends Component {
                 originalCells: this.constructor.generateBoardArray(this.props.startSudoku),
                 possibleChoices: [this.blankDisplay, "1", "2", "3", "4", "5", "6", "7", "8", "9"],
                 renderSelect: false,
-                startSudoku:this.props.startSudoku
+                startSudoku: this.props.startSudoku
             })
         }
         return (
