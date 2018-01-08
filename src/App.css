@@ -44,14 +44,15 @@
 }
 
 
-.selected{
-  background-color: yellow 
-}
+
 .oddBlock{
   background-color: white
 }
 .evenBlock{
   background-color:rgb(214, 214, 214)
+}
+.selected{
+  background-color: yellow 
 }
 .invalid{
   background-color:lightcoral;
