@@ -12,7 +12,7 @@ class App extends Component {
     // this._value = "nothing";
     // this.state = { value: "nothing" };
     this.state = {
-      showOnlyValid: false,
+      showOnlyValid: true,
       puzzle: this.constructor.puzzles[3]
     }
     // this.state.boardInstance = new SudokuBoard({startSudoku:this.state.startSudoku});
