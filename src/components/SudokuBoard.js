@@ -11,7 +11,7 @@ class SudokuBoard extends Component {
                 row++
                 arr[row] = [];
             }
-            arr[row].push(value==="."?this.blankDisplay:value);
+            arr[row].push(value === "." ? this.blankDisplay : value);
         });
         return arr;
     }
@@ -19,11 +19,12 @@ class SudokuBoard extends Component {
         super(props);
         const cells = this.constructor.generateBoardArray(props.startSudoku);
         this.state = {
+            startSudoku: props.startSudoku,
             cells: cells.slice(),
             originalCells: this.constructor.generateBoardArray(props.startSudoku),//we want this to never change
             possibleChoices: [this.blankDisplay, "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-            renderSelect:false,
-            mousePosition:[0,0]
+            renderSelect: false,
+            mousePosition: [0, 0]
         }
         // console.log(this);
     }
@@ -34,10 +35,10 @@ class SudokuBoard extends Component {
         const blockCoords = this.getBlockCoords(coords);
         return (blockCoords[0] * 3) + (blockCoords[1])
     }
-    static get blankDisplay(){
+    static get blankDisplay() {
         return "-"
     }
-     get blankDisplay(){
+    get blankDisplay() {
         return this.constructor.blankDisplay;
     }
     getRowValues([rowIndex, columnIndex]) {
@@ -150,6 +151,15 @@ class SudokuBoard extends Component {
     }
     renderGameBoard() {
         // const that = this;
+        if (this.state.startSudoku !== this.props.startSudoku) {
+            this.setState({
+                cells: this.constructor.generateBoardArray(this.props.startSudoku),
+                originalCells: this.constructor.generateBoardArray(this.props.startSudoku),
+                possibleChoices: [this.blankDisplay, "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+                renderSelect: false,
+                startSudoku:this.props.startSudoku
+            })
+        }
         return (
             <div className="sudokuBoard">
                 {this.state.cells.map((row, rowIndex) => {
@@ -167,7 +177,7 @@ class SudokuBoard extends Component {
                                         isNaN(this.state.originalCells[rowIndex][columnIndex]) === true
                                     }
                                     onCellClick={(cellClickArgs) => {
-                                        this.setState({mousePosition:cellClickArgs.mousePosition,renderSelect:true})
+                                        this.setState({ mousePosition: cellClickArgs.mousePosition, renderSelect: isNaN(this.state.originalCells[rowIndex][columnIndex]) === true })
                                         this.onCellClick(cellClickArgs.coords);
                                     }}
                                     setCell={value => {

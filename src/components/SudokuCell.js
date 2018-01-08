@@ -70,7 +70,7 @@ class SudokuCell extends Component {
     //     </PieMenu>);
     // }
     render() {
-        const that = this;
+        // const that = this;
         // if (this.state.editable) {
         //     return (<PieMenu
         //         radius='125px'
@@ -107,10 +107,10 @@ class SudokuCell extends Component {
             <div className={this.getClassName()}
                 onClick={(e) => {
                     // console.log(e.target);
-                    if (this.props.modifiable) {
+                    // if (this.props.modifiable) {
                         // this.setState({ editable: true, mousePosition: [e.clientX, e.clientY] });
                         this.props.onCellClick({ coords: this.props.coords, mousePosition: [e.clientX, e.clientY] });
-                    }
+                    // }
                 }}>
                 {this.props.value}
                 {/* {(() => {
