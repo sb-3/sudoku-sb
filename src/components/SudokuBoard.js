@@ -158,7 +158,8 @@ class SudokuBoard extends Component {
                 originalCells: this.constructor.generateBoardArray(this.props.startSudoku),
                 possibleChoices: [this.blankDisplay, "1", "2", "3", "4", "5", "6", "7", "8", "9"],
                 renderSelect: false,
-                startSudoku: this.props.startSudoku
+                startSudoku: this.props.startSudoku,
+                selectedCellCoords:undefined
             })
         }
         return (

@@ -52,7 +52,7 @@
   background-color:rgb(214, 214, 214)
 }
 .selected{
-  background-color: yellow 
+  background-color: lightgreen 
 }
 .invalid{
   background-color:lightcoral;

@@ -49,14 +49,17 @@ class App extends Component {
         </div>
         <div>
           <ul style={{ "text-align": "left" }}>
-            {this.constructor.puzzles.map(puzzle => {
-              return (<li onClick={() => {
-                console.log("li clicked", puzzle);
-                this.setState({ puzzle: puzzle.slice() });
-              }}>
-                {puzzle[0]}
-              </li>)
-            })}
+            <div>
+              {this.constructor.puzzles.map(puzzle => {
+                return (<li onClick={() => {
+                  console.log("li clicked", puzzle);
+                  this.setState({ puzzle: puzzle.slice() });
+                }}>
+                  {puzzle[0]}
+                </li>)
+
+              })}
+            </div>
           </ul>
         </div>
       </div>
