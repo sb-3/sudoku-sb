@@ -27,7 +27,7 @@
   margin: auto;
   height: 500px;
   padding: 75px;
-  display: inline-block;
+  display: grid;
   position: relative;
   min-width: 600px;
   
@@ -36,11 +36,14 @@
   float:left;
 }
 .sudokuCell{
+  position:center;
+  float:center;
   border: 1px solid black;
   font-size:40px;
   height:60px;
   width:60px;
   color:rgb(0, 0, 0);
+  display: inline-grid
   /* white-space:nowrap; */
   /* position:fixed; */
 }
