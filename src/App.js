@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import SudokuBoard from './components/SudokuBoard';
 
@@ -8,17 +7,14 @@ import SudokuBoard from './components/SudokuBoard';
 class App extends Component {
   constructor() {
     super();
-    // console.log(this);
-    // this._value = "nothing";
-    // this.state = { value: "nothing" };
     this.state = {
-      showOnlyValid: true,
-      puzzle: this.constructor.puzzles[3]
+      showOnlyValid: false,
+      // puzzle: this.constructor.puzzles[0]
     }
-    // this.state.boardInstance = new SudokuBoard({startSudoku:this.state.startSudoku});
+
   }
   static get puzzles() {
-    return [["974236158638591742125487936316754289742918563589362417867125394253649871491873625", "974236158638591742125487936316754289742918563589362417867125394253649871491873625"]
+    return [false
       , ["2564891733746159829817234565932748617128.6549468591327635147298127958634849362715", "256489173374615982981723456593274861712836549468591327635147298127958634849362715"]
       , ["3.542.81.4879.15.6.29.5637485.793.416132.8957.74.6528.2413.9.655.867.192.965124.8", "365427819487931526129856374852793641613248957974165283241389765538674192796512438"]
       , ["..2.3...8.....8....31.2.....6..5.27..1.....5.2.4.6..31....8.6.5.......13..531.4..", "672435198549178362831629547368951274917243856254867931193784625486592713725316489"]
@@ -41,26 +37,35 @@ class App extends Component {
       , ["8..........36......7..9.2...5...7.......457.....1...3...1....68..85...1..9....4..", "812753649943682175675491283154237896369845721287169534521974368438526917796318452"]]
   }
   render() {
-    const that = this;
     return (
       <div className="App">
-        <div>
-          <SudokuBoard startSudoku={this.state.puzzle[0]} showOnlyValid={this.state.showOnlyValid} />
-        </div>
-        <div>
-          <ul style={{ "text-align": "left" }}>
-            <div>
-              {this.constructor.puzzles.map(puzzle => {
-                return (<li onClick={() => {
-                  console.log("li clicked", puzzle);
-                  this.setState({ puzzle: puzzle.slice() });
-                }}>
-                  {puzzle[0]}
-                </li>)
+        <select size="10" onDoubleClick={(e) => {
+          this.setState({ puzzle: JSON.parse(e.target.value) })
+        }} style={{ minWidth: "600px" }}>
+          {this.constructor.puzzles.map(puzzle => {
+            return (<option
+              value={JSON.stringify(puzzle)}>
+              {puzzle[0]}
+            </option>)
 
-              })}
-            </div>
-          </ul>
+          })}
+        </select>
+        {this.state.puzzle ?
+          (<div>
+            <SudokuBoard startSudoku={this.state.puzzle[0]} showOnlyValid={this.state.showOnlyValid} />
+
+            <button style={{
+              textAlign: "center"
+            }} onClick={() => {
+              this.setState({ showOnlyValid: !this.state.showOnlyValid })
+            }}>{this.state.showOnlyValid ? "Show all possible choices" : "Show only valid choices"}
+            </button>
+          </div>)
+          : undefined}
+
+        <div>
+
+
         </div>
       </div>
     )
