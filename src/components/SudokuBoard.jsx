@@ -19,7 +19,7 @@ class SudokuBoard extends Component {
         super(props);
         const cells = this.constructor.generateBoardArray(props.startSudoku);
         this.state = {
-            startSudoku: props.startSudoku,
+            startSudoku: props.startSudoku||".................................................................................",
             cells: cells.slice(),
             originalCells: this.constructor.generateBoardArray(props.startSudoku),//we want this to never change
             possibleChoices: [this.blankDisplay, "1", "2", "3", "4", "5", "6", "7", "8", "9"],
